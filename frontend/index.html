@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rohini Sharma | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden { display: none !important; }
+        .search-shadow:focus-within { box-shadow: 0 1px 6px rgba(32,33,36,.28); border-color: rgba(223,225,229,0); }
+        .tab-active { border-bottom: 3px solid #1a73e8; color: #1a73e8; font-weight: 500; }
+        
+        .multi-color-r {
+            background: linear-gradient(to right, #4285F4 25%, #EA4335 25%, #EA4335 50%, #FBBC05 50%, #FBBC05 75%, #34A853 75%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+        
+        .pfp-container {
+            background-color: white;
+            border: 1.5px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Logic for swapping initial with actual image */
+        .pfp-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .pfp-image[src]:not([src=""]) {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .suggestions-box {
+            position: absolute;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #dfe1e5;
+            border-top: none;
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 4px 6px rgba(32,33,36,.28);
+            z-index: 100;
+            overflow: hidden;
+            margin-top: -1px;
+        }
+        .suggestion-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s;
+        }
+        .suggestion-item:hover { background-color: #f1f3f4; }
+        .suggestion-item b { color: #1a73e8; }
+    </style>
+</head>
+<body class="bg-white text-gray-900 min-h-screen flex flex-col" onclick="closeAllSuggestions()">
+
+    <!-- LANDING PAGE VIEW -->
+    <div id="landing-view" class="flex-grow flex flex-col">
+        <header class="flex justify-end p-4 space-x-6 text-[13px] font-normal text-gray-700 items-center">
+            <button onclick="handleKeywordNavigation('About')" class="hover:underline text-[#3c4043]">About</button>
+            <button onclick="handleKeywordNavigation('Projects')" class="hover:underline text-[#3c4043]">Projects</button>
+            <button onclick="handleKeywordNavigation('Skills')" class="hover:underline text-[#3c4043]">Skills</button>
+            <button onclick="handleKeywordNavigation('Contact')" class="hover:underline text-[#3c4043]">Contact</button>
+            <div class="pfp-container w-8 h-8 cursor-pointer hover:shadow-md transition-shadow" onclick="showLanding()">
+                <!-- Header Initial (remains same) -->
+                <span class="multi-color-r text-lg">R</span>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col items-center pt-32 px-6">
+            <div class="text-7xl md:text-[92px] font-bold mb-8 select-none tracking-tight">
+                <span class="text-blue-500">R</span><span class="text-red-500">o</span><span class="text-yellow-500">h</span><span class="text-blue-500">i</span><span class="text-green-500">n</span><span class="text-red-500">i</span>
+            </div>
+
+            <div class="w-full max-w-[584px] relative">
+                <form onsubmit="event.preventDefault(); handleMainSearch();" class="flex items-center px-5 py-3 border border-gray-200 rounded-full search-shadow transition-all group relative z-10 bg-white">
+                    <svg class="text-gray-400 mr-3 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" id="main-search-input" autocomplete="off" class="flex-grow outline-none text-base" placeholder="Search portfolio..." oninput="handleInput(this, 'main-suggestions')">
+                    
+                    <div class="flex items-center space-x-4 border-l pl-4 ml-4 text-gray-400">
+                        <a href="https://github.com/Rohinigit-hub" target="_blank" class="hover:text-gray-900">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/rohini-sharma-56a362386/" target="_blank" class="hover:text-blue-600">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                    </div>
+                </form>
+                <div id="main-suggestions" class="suggestions-box hidden"></div>
+
+                <div class="flex justify-center mt-8 space-x-3">
+                    <button onclick="handleMainSearch()" class="px-5 py-2 bg-[#f8f9fa] border border-transparent hover:border-[#dadce0] hover:shadow-sm rounded text-[14px] text-[#3c4043]">Explore</button>
+                    <button onclick="handleKeywordNavigation('Contact')" class="px-5 py-2 bg-[#f8f9fa] border border-transparent hover:border-[#dadce0] hover:shadow-sm rounded text-[14px] text-[#3c4043]">Hire Me</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- RESULTS PAGE VIEW -->
+    <div id="results-view" class="hidden flex-grow flex flex-col">
+        <header class="sticky top-0 bg-white z-50 border-b border-gray-100 pt-6 px-4 md:px-8 pb-0">
+            <div class="flex flex-col md:flex-row items-center md:space-x-8 mb-4">
+                <div class="text-[24px] font-bold cursor-pointer mb-4 md:mb-0 select-none" onclick="showLanding()">
+                    <span class="text-blue-500">R</span><span class="text-red-500">o</span><span class="text-yellow-500">h</span><span class="text-blue-500">i</span><span class="text-green-500">n</span><span class="text-red-500">i</span>
+                </div>
+                <div class="w-full max-w-[692px] flex items-center relative">
+                    <form onsubmit="event.preventDefault(); handleResultsSearch();" class="flex-grow flex items-center px-5 py-2.5 border border-gray-200 rounded-full shadow-sm search-shadow bg-white z-10">
+                        <input type="text" id="results-search-input" autocomplete="off" class="flex-grow outline-none text-base" oninput="handleInput(this, 'results-suggestions')">
+                        <button type="button" onclick="clearSearch()" class="text-gray-400 hover:text-gray-600 px-2 text-xl font-light">&times;</button>
+                        
+                        <div class="flex items-center space-x-3 border-l pl-3 ml-2 text-gray-400">
+                            <a href="https://github.com/Rohinigit-hub" target="_blank" class="hover:text-gray-900">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            </a>
+                            <a href="https://www.linkedin.com/in/rohini-sharma-56a362386/" target="_blank" class="hover:text-blue-600">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            </a>
+                        </div>
+
+                        <div class="h-6 w-px bg-gray-200 mx-2"></div>
+                        <button type="submit" class="text-blue-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </button>
+                    </form>
+                    <div id="results-suggestions" class="suggestions-box hidden"></div>
+                    
+                    <div class="hidden lg:flex items-center ml-auto space-x-5 text-[13px] font-normal text-gray-500">
+                        <button onclick="setActiveTab('About')" class="hover:text-gray-900">About</button>
+                        <button onclick="setActiveTab('Projects')" class="hover:text-gray-900">Projects</button>
+                        <button onclick="setActiveTab('Skills')" class="hover:text-gray-900">Skills</button>
+                        <button onclick="setActiveTab('Contact')" class="hover:text-gray-900">Contact</button>
+                        <div class="pfp-container w-7 h-7 ml-2 cursor-pointer shadow-sm">
+                            <span class="multi-color-r text-xs">R</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="md:ml-36 flex space-x-8 text-[14px] text-gray-500 overflow-x-auto" id="tab-container">
+                <button id="tab-About" onclick="setActiveTab('About')" class="tab-btn pb-3 px-1 border-b-[3px] border-transparent hover:text-gray-800">About</button>
+                <button id="tab-Projects" onclick="setActiveTab('Projects')" class="tab-btn pb-3 px-1 border-b-[3px] border-transparent hover:text-gray-800">Projects</button>
+                <button id="tab-Skills" onclick="setActiveTab('Skills')" class="tab-btn pb-3 px-1 border-b-[3px] border-transparent hover:text-gray-800">Skills</button>
+                <button id="tab-Contact" onclick="setActiveTab('Contact')" class="tab-btn pb-3 px-1 border-b-[3px] border-transparent hover:text-gray-800">Contact</button>
+            </div>
+        </header>
+
+        <main class="flex-grow max-w-7xl mx-auto w-full px-4 md:px-8 py-4 flex flex-col lg:flex-row gap-12">
+            <div class="flex-grow lg:max-w-3xl md:ml-28">
+                <p id="result-stats" class="text-gray-500 text-[14px] mb-6"></p>
+                <div id="results-list" class="space-y-10 hidden"></div>
+                
+                <!-- About Section -->
+                <div id="about-content" class="hidden animate-in fade-in duration-700">
+                    <div class="bg-white border border-gray-200 rounded-[32px] p-8 md:p-12 shadow-sm hover:shadow-md hover:border-blue-50 transition-all duration-300 flex flex-col items-center">
+                        
+                        <!-- PROFILE PICTURE CONTAINER (EASY TO SWAP LATER) -->
+                        <div class="pfp-container w-32 h-32 md:w-40 md:h-40 mb-10 shadow-lg border-2 hover:scale-105 transition-transform duration-300 overflow-hidden">
+                            <!-- To swap: Simply add your image URL to the src below -->
+                            <img src="" alt="Rohini Sharma" class="pfp-image">
+                            <!-- Fallback initial remains visible until src is added -->
+                            <span class="multi-color-r text-6xl md:text-8xl select-none">R</span>
+                        </div>
+                        
+                        <div class="w-full text-center">
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 tracking-tight">Rohini Sharma</h2>
+                            <p class="text-[#4d5156] leading-[1.7] text-[18px] mb-8 max-w-2xl mx-auto">
+                                I build scalable web applications that bridge complex backend logic with intuitive UI. 
+                                Currently pursuing a BCA at Kristu Jayanti University, I am passionate about creating 
+                                innovative <button onclick="setActiveTab('Projects')" class="text-blue-700 hover:underline font-semibold transition-colors">Projects</button>, 
+                                mastering new <button onclick="setActiveTab('Skills')" class="text-blue-700 hover:underline font-semibold transition-colors">Skills</button>, 
+                                and building data-driven solutions.
+                            </p>
+                            
+                            <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 inline-block text-left shadow-inner hover:shadow-md hover:-translate-y-1 transition-all duration-300 group">
+                                <h3 class="font-bold text-gray-900 text-lg mb-3 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                                    Education
+                                </h3>
+                                <p class="text-gray-700 text-base">
+                                    BCA 1st Year · 
+                                    <a href="https://kristujayanti.edu.in/" target="_blank" class="text-blue-700 hover:underline font-medium decoration-2">Kristu Jayanti University, Bengaluru</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Section -->
+                <div id="contact-form-container" class="hidden animate-in fade-in duration-500 space-y-8">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300">
+                        <h2 class="text-2xl font-semibold mb-8 text-gray-900">Send Inquiry</h2>
+                        <form id="inquiry-form" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Full Name</label>
+                                    <input name="name" required type="text" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-blue-500 bg-[#fdfdfd]" placeholder="John Doe">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Email Address</label>
+                                    <input name="email" required type="email" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-blue-500 bg-[#fdfdfd]" placeholder="john@example.com">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Message</label>
+                                <textarea name="message" required rows="4" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-blue-500 resize-none bg-[#fdfdfd]" placeholder="How can I help you?"></textarea>
+                            </div>
+                            <button type="submit" id="submit-btn" class="w-full py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-sm active:scale-[0.98]">Submit Inquiry</button>
+                        </form>
+                        <div id="form-status" class="mt-6 p-4 rounded-xl text-center hidden fade-in"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-center gap-3 hover:shadow-md hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 group">
+                            <div class="text-blue-600 bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div class="flex flex-col truncate">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Mail</span>
+                                <span class="text-xs text-blue-700 font-medium select-all truncate">rohinisharma123a@gmail.com</span>
+                            </div>
+                        </div>
+
+                        <a href="https://github.com/Rohinigit-hub" target="_blank" class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-center gap-3 hover:shadow-md hover:border-gray-900 hover:-translate-y-1 transition-all duration-300 group">
+                            <div class="text-gray-700 bg-gray-50 p-2 rounded-lg group-hover:bg-gray-100 transition-colors">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">GitHub</span>
+                                <span class="text-xs text-gray-700 font-medium group-hover:text-blue-600 transition-colors">Rohinigit-hub</span>
+                            </div>
+                        </a>
+
+                        <a href="https://www.linkedin.com/in/rohini-sharma-56a362386/" target="_blank" class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-center gap-3 hover:shadow-md hover:border-blue-500 hover:-translate-y-1 transition-all duration-300 group">
+                            <div class="text-blue-700 bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">LinkedIn</span>
+                                <span class="text-xs text-gray-700 font-medium group-hover:text-blue-600 transition-colors">Rohini Sharma</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <aside id="knowledge-panel" class="hidden lg:block w-[368px] flex-shrink-0">
+                <div class="border border-gray-200 rounded-xl overflow-hidden sticky top-32 bg-white">
+                    <div class="bg-gray-50 p-6 border-b border-gray-200">
+                        <div class="pfp-container w-16 h-16 mb-4 shadow-inner">
+                            <span class="multi-color-r text-2xl">R</span>
+                        </div>
+                        <h2 class="text-[22px] font-medium text-gray-900">Rohini Sharma</h2>
+                        <p class="text-gray-500 text-[14px]">Full Stack Developer · Kristu Jayanti University</p>
+                    </div>
+                    <div class="p-6 space-y-5 text-[14px]">
+                        <p class="italic text-gray-600 border-l-2 border-blue-500 pl-4 py-1 leading-relaxed">I build scalable web applications that bridge complex backend logic with intuitive UI.</p>
+                        <div class="space-y-3 pt-4 border-t border-gray-100 text-gray-700">
+                            <div class="flex items-center"><span class="w-6 text-gray-400">📍</span> Bengaluru, KA, India</div>
+                            <div class="flex items-center"><span class="w-6 text-gray-400">📧</span> <span>rohinisharma123a@gmail.com</span></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <footer class="bg-[#f2f2f2] text-[#70757a] text-[13px] border-t border-[#dadce0] mt-auto">
+        <div class="px-4 py-2 flex flex-col items-center justify-center gap-x-6 gap-y-1">
+            <div class="flex items-center gap-2">
+                <span>Bengaluru, Karnataka, <strong class="text-[#3c4043]">India</strong></span>
+                <span class="text-gray-300">|</span>
+                <span>© 2026 Rohini Sharma. All Rights Reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const PROJECTS = [
+            { id: 1, title: "E-commerce Platform: Shopsy", displayUrl: "github.com › rohini › shopsy", description: "Full-stack e-commerce solution with React and Node.js.", tags: ["React", "Node.js", "MySQL"] },
+            { id: 4, title: "Twisted Ties - Luxury Accessories", displayUrl: "twistedties.store", description: "Handmade accessory storefront designed with Wix Studio.", tags: ["Wix Studio", "E-commerce"] },
+            { id: 2, title: "Data Analytics: Python Insights", displayUrl: "github.com › rohini › sales-analysis", description: "Analyzed 100k+ transactions using Pandas and NumPy.", tags: ["Python", "Pandas", "Matplotlib"] },
+            { id: 3, title: "BMSIT Student Portal", displayUrl: "github.com › rohini › bmsit-helper", description: "Automation tool for student attendance tracking.", tags: ["JavaScript", "Chrome API"] },
+            { id: 5, title: "CloudNote - Markdown Editor", displayUrl: "github.com › rohini › cloudnote", description: "A secure, cloud-synced markdown note-taking application built with React and Firebase.", tags: ["React", "Firebase", "Markdown"] },
+            { id: 6, title: "Portfolio Dashboard - Analytics", displayUrl: "github.com › rohini › dashboard", description: "Custom internal dashboard to track portfolio traffic and inquiry conversion rates.", tags: ["Node.js", "MySQL", "Chart.js"] },
+            { id: 7, title: "WeatherSphere - Global Forecasts", displayUrl: "github.com › rohini › weather-sphere", description: "Real-time weather tracking application with interactive maps and 7-day forecasting.", tags: ["JavaScript", "REST API", "OpenWeather"] }
+        ];
+
+        const SKILLS_DATA = [
+            { title: "JS Ecosystem", items: ["React", "JavaScript", "Node.js", "Express", "Next.js"] },
+            { title: "Styling & UI", items: ["Tailwind CSS", "Wix Studio", "CSS3", "Responsive Design"] },
+            { title: "Data Focus", items: ["MySQL", "MongoDB", "Python", "Pandas", "NumPy"] },
+            { title: "Workflow", items: ["Git", "GitHub", "Vercel", "REST APIs", "CI/CD"] }
+        ];
+
+        const CATEGORIES = ["About", "Projects", "Skills", "Contact", "Home"];
+        let state = { query: '', activeTab: 'About' };
+
+        function showLanding() {
+            document.getElementById('landing-view').classList.remove('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            state.query = '';
+            document.getElementById('main-search-input').value = '';
+            closeAllSuggestions();
+        }
+
+        function handleInput(input, containerId) {
+            const query = input.value.trim();
+            const container = document.getElementById(containerId);
+            if (query.length === 0) { container.classList.add('hidden'); return; }
+
+            const catMatches = CATEGORIES.filter(c => c.toLowerCase().includes(query.toLowerCase()));
+            const projectMatches = PROJECTS.filter(p => p.title.toLowerCase().includes(query.toLowerCase()) || p.tags.some(t => t.toLowerCase().includes(query.toLowerCase()))).slice(0, 5);
+
+            if (catMatches.length === 0 && projectMatches.length === 0) {
+                container.innerHTML = `<div class="p-4 text-gray-500 text-sm italic">No results found for "${query}"</div>`;
+            } else {
+                let html = "";
+                catMatches.forEach(cat => {
+                    html += `<div class="suggestion-item" onclick="handleKeywordNavigation('${cat}')">
+                        <svg class="text-blue-500 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                        <span class="text-sm font-medium text-gray-700">${cat}</span>
+                    </div>`;
+                });
+                projectMatches.forEach(p => {
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    const title = p.title.replace(regex, '<b>$1</b>');
+                    html += `<div class="suggestion-item" onclick="selectSuggestion('${p.title}', ${p.id})">
+                        <svg class="text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <span class="text-sm text-gray-700 truncate">${title}</span>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
+            container.classList.remove('hidden');
+        }
+
+        function getSkillLogo(name) {
+            const size = "w-4 h-4";
+            const label = name.toLowerCase();
+            if (label.includes('react')) return `<svg class="${size}" viewBox="0 0 24 24" fill="#61DAFB"><path d="M12 9.328c-.464 0-.906.058-1.312.164C10.28 7.33 9.42 5.094 8.28 3.162l.142-.244a1.18 1.18 0 0 1 1.642-.424l.216.126a1.18 1.18 0 0 1 .424 1.642l-.126.216C11.3 6.01 11.758 7.6 12 9.328zm0 5.344c.464 0 .906-.058 1.312-.164.408 2.162 1.268 4.398 2.408 6.33l-.142.244a1.18 1.18 0 0 1-1.642.424l-.216-.126a1.18 1.18 0 0 1-.424-1.642l.126-.216c-.722-1.532-1.18-3.122-1.422-4.85z"/></svg>`;
+            if (label.includes('javascript')) return `<svg class="${size}" viewBox="0 0 24 24" fill="#F7DF1E"><path d="M0 0h24v24H0V0zm22.034 18.268c-.153-.943-.766-1.556-1.744-2.023-.977-.466-2.18-.737-3.41-.737-.962 0-1.85.12-2.587.34l-.06.015c-.47.165-.855.42-1.125.75-.27.33-.405.735-.405 1.185 0 .42.135.81.42 1.11.285.3.705.54 1.215.72.51.18 1.11.3 1.77.36l1.245.12c1.17.12 2.085.375 2.76.765.675.39 1.02 1.05 1.02 1.965 0 .915-.405 1.635-1.215 2.16-.81.525-1.92.795-3.33.795-1.41 0-2.49-.33-3.21-.99-.72-.66-1.14-1.56-1.26-2.685l2.4-.45c.15.705.435 1.23.855 1.575.42.345.99.51 1.71.51.72 0 1.26-.135 1.62-.405.36-.27.54-.645.54-1.11 0-.375-.15-.705-.465-.96-.315-.255-.84-.45-1.575-.585l-1.38-.225c-1.11-.18-1.965-.48-2.58-.9-.615-.42-.915-1.08-.915-1.995 0-.84.345-1.53 1.035-2.07.69-.54 1.635-.81 2.835-.81 1.05 0 1.935.195 2.655.585.72.39 1.215 1.02 1.485 1.875l-2.31.57zm-11.835-4.485c-.18.84-.435 1.515-.765 2.025-.33.51-.765.885-1.305 1.125-.54.24-1.2.36-1.98.36-.78 0-1.425-.12-1.935-.36-.51-.24-.915-.615-1.215-1.125s-.45-1.185-.45-2.025v-5.28h2.52v5.28c0 .36.06.63.18.81.12.18.315.27.585.27.27 0 .465-.09.585-.27.12-.18.18-.45.18-.81v-5.28h2.52v5.28z"/></svg>`;
+            if (label.includes('node.js')) return `<svg class="${size}" viewBox="0 0 24 24" fill="#339933"><path d="M11.999 1.5c-.328 0-.649.088-.93.25L3.35 6.13c-.562.325-.913.931-.913 1.58v8.58c0 .649.351 1.255.913 1.58l7.719 4.38c.281.162.602.25.93.25s.649-.088.93-.25l7.719-4.38c.562-.325.913-.931.913-1.58V7.71c0-.649-.351-1.255-.913-1.58L12.93 1.75c-.281-.162-.602-.25-.93-.25z"/></svg>`;
+            if (label.includes('mongodb')) return `<svg class="${size}" viewBox="0 0 24 24" fill="#47A248"><path d="M17.193 9.555c-1.34-4.22-3.69-8.432-4.108-9.176a.54.54 0 0 0-.968 0C11.53 1.48 9.3 5.372 7.842 9.555a12.87 12.87 0 0 0-.642 4.108c0 3.35 2.12 6.853 4.108 8.432a1.34 1.34 0 0 0 1.385 0c1.986-1.579 4.108-5.082 4.108-8.432a12.87 12.87 0 0 0-.608-4.108z"/></svg>`;
+            if (label.includes('mysql')) return `<svg class="${size}" viewBox="0 0 24 24" fill="#4479A1"><path d="M12.001 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm4.332 17.514c-.164.082-.328.164-.492.246-1.147.574-2.458.82-3.84.82-1.382 0-2.693-.246-3.84-.82a4.92 4.92 0 0 1-.492-.246 12.01 12.01 0 0 1-1.639-1.23c-1.229-1.147-1.844-2.458-1.844-3.84 0-1.382.615-2.693 1.844-3.84a12.01 12.01 0 0 1 1.639-1.23c.164-.082.328-.164.492-.246 1.147-.574 2.458-.82 3.84-.82 1.382 0 2.693.246 3.84.82.164.082.328.164.492.246a12.01 12.01 0 0 1 1.639 1.23c1.229 1.147 1.844 2.458 1.844 3.84 0 1.382-.615 2.693-1.844 3.84a12.01 12.01 0 0 1-1.639 1.23z"/></svg>`;
+            if (label.includes('tailwind')) return `<svg class="${size}" viewBox="0 0 24 24" fill="#06B6D4"><path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/></svg>`;
+            if (label.includes('python')) return `<svg class="${size}" viewBox="0 0 24 24" fill="#3776AB"><path d="M11.998 0C5.362 0 5.647 2.887 5.647 2.887l.031 3.012H12V10.2h6.353s2.47-.327 2.47-5.118c0-4.79-2.042-5.082-2.042-5.082L11.998 0zM12 13.8H5.647s-2.47.327-2.47 5.118c0 4.79 2.042 5.082 2.042 5.082l6.811.018c6.636 0 6.351-2.887 6.351-2.887l-.031-3.012H12v-4.321z"/></svg>`;
+            if (label.includes('github')) return `<svg class="${size}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.839 1.237 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>`;
+            return `<svg class="${size}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`;
+        }
+
+        function selectSuggestion(title, id) {
+            document.getElementById('main-search-input').value = title;
+            document.getElementById('results-search-input').value = title;
+            setQueryAndSearch(title);
+            setTimeout(() => {
+                const element = document.querySelector(`[data-id="${id}"]`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    element.classList.add('bg-blue-50');
+                    setTimeout(() => element.classList.remove('bg-blue-50'), 2000);
+                }
+            }, 100);
+        }
+
+        function closeAllSuggestions() {
+            document.getElementById('main-suggestions').classList.add('hidden');
+            document.getElementById('results-suggestions').classList.add('hidden');
+        }
+
+        function handleKeywordNavigation(q) {
+            const lowerQ = q.toLowerCase().trim();
+            document.getElementById('main-search-input').value = q;
+            document.getElementById('results-search-input').value = q;
+
+            if (lowerQ === 'home') { showLanding(); return true; }
+            if (['about', 'about rohini'].includes(lowerQ)) { setActiveTab('About'); return true; }
+            if (['skills', 'my skills'].includes(lowerQ)) { setActiveTab('Skills'); return true; }
+            if (['projects', 'my projects'].includes(lowerQ)) { setActiveTab('Projects'); return true; }
+            if (['contact', 'contact rohini'].includes(lowerQ)) { setActiveTab('Contact'); return true; }
+            return false;
+        }
+
+        function setQueryAndSearch(q) {
+            state.query = q;
+            const lowerQ = q.toLowerCase().trim();
+            if (lowerQ === 'skills' || lowerQ === 'my skills') state.activeTab = 'Skills';
+            else if (lowerQ === 'contact' || lowerQ === 'contact rohini') state.activeTab = 'Contact';
+            else if (lowerQ === 'about' || lowerQ === 'about rohini') state.activeTab = 'About';
+            else state.activeTab = 'Projects';
+            updateTabUI();
+            renderResults();
+            closeAllSuggestions();
+        }
+
+        function handleMainSearch() {
+            const q = document.getElementById('main-search-input').value;
+            if(!q) { handleKeywordNavigation('Projects'); return; }
+            if (!handleKeywordNavigation(q)) { setQueryAndSearch(q); }
+        }
+
+        function handleResultsSearch() {
+            const q = document.getElementById('results-search-input').value;
+            if(!q) return;
+            if (!handleKeywordNavigation(q)) { setQueryAndSearch(q); }
+        }
+
+        function clearSearch() {
+            document.getElementById('results-search-input').value = '';
+            state.query = '';
+            renderResults();
+        }
+
+        function setActiveTab(tab) {
+            state.activeTab = tab;
+            state.query = ''; 
+            document.getElementById('results-search-input').value = '';
+            updateTabUI();
+            renderResults();
+            closeAllSuggestions();
+        }
+
+        function updateTabUI() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.add('border-transparent');
+            });
+            const activeBtn = document.getElementById(`tab-${state.activeTab}`);
+            if(activeBtn) {
+                activeBtn.classList.add('tab-active');
+                activeBtn.classList.remove('border-transparent');
+            }
+        }
+
+        function renderResults() {
+            document.getElementById('landing-view').classList.add('hidden');
+            document.getElementById('results-view').classList.remove('hidden');
+            const list = document.getElementById('results-list');
+            const contact = document.getElementById('contact-form-container');
+            const about = document.getElementById('about-content');
+            const stats = document.getElementById('result-stats');
+            const sidebar = document.getElementById('knowledge-panel');
+            
+            list.classList.add('hidden');
+            contact.classList.add('hidden');
+            about.classList.add('hidden');
+            sidebar.classList.add('hidden'); 
+            list.innerHTML = '';
+
+            if (state.activeTab === 'Contact') {
+                contact.classList.remove('hidden');
+                stats.innerText = 'Displaying contact options';
+                return;
+            }
+
+            if (state.activeTab === 'About') {
+                about.classList.remove('hidden');
+                stats.innerText = 'Displaying bio and education';
+                return;
+            }
+
+            if (state.activeTab === 'Skills') {
+                list.classList.remove('hidden');
+                stats.innerText = `About ${SKILLS_DATA.length} categories (0.34 seconds)`;
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4 fade-in';
+                SKILLS_DATA.forEach(cat => {
+                    const card = document.createElement('div');
+                    card.className = 'border border-gray-200 p-5 rounded-xl hover:shadow-md hover:border-blue-200 transition-all duration-300 bg-[#f8f9fa]';
+                    card.innerHTML = `<h4 class="text-blue-600 font-bold text-xs uppercase tracking-widest mb-3">${cat.title}</h4>
+                        <div class="flex flex-wrap gap-2">${cat.items.map(i => `<span class="flex items-center gap-2 px-3 py-1 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 font-medium hover:bg-blue-50 transition-colors">${getSkillLogo(i)} ${i}</span>`).join('')}</div>`;
+                    grid.appendChild(card);
+                });
+                list.appendChild(grid);
+                return;
+            }
+
+            list.classList.remove('hidden');
+            sidebar.classList.remove('hidden'); 
+            const q = state.query.toLowerCase().trim();
+            const showAll = q === '';
+            const filtered = showAll ? PROJECTS : PROJECTS.filter(p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q) || p.tags.some(t => t.toLowerCase().includes(q)));
+            stats.innerText = `About ${filtered.length} results (0.42 seconds)`;
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="py-12 text-gray-500 text-center">No results found for "${state.query}". Try "React" or "Python".</div>`;
+                return;
+            }
+            filtered.forEach((p, i) => {
+                const div = document.createElement('div');
+                div.className = 'fade-in transition-colors duration-500 p-2 rounded-lg';
+                div.setAttribute('data-id', p.id);
+                div.style.animationDelay = `${i * 50}ms`;
+                div.innerHTML = `<div class="text-[14px] text-gray-700 mb-1 flex items-center space-x-2"><div class="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200 text-[10px] font-bold">R</div><span>${p.displayUrl}</span></div>
+                    <h3 class="text-[20px] text-blue-700 hover:underline cursor-pointer font-normal mb-1" onclick="window.open('https://github.com/Rohinigit-hub', '_blank')">${p.title}</h3>
+                    <p class="text-[#4d5156] text-[14px] leading-[1.58] mb-2">${p.description}</p>
+                    <div class="flex flex-wrap gap-2">${p.tags.map(t => `<span class="flex items-center gap-1.5 text-[11px] bg-[#f8f9fa] border border-gray-200 px-2 py-0.5 rounded text-gray-500 font-semibold uppercase tracking-tight">${getSkillLogo(t)} #${t}</span>`).join('')}</div>`;
+                list.appendChild(div);
+            });
+        }
+
+        function handleInput(input, containerId) {
+            const query = input.value.trim();
+            const container = document.getElementById(containerId);
+            if (query.length === 0) { container.classList.add('hidden'); return; }
+            const catMatches = CATEGORIES.filter(c => c.toLowerCase().includes(query.toLowerCase()));
+            const projectMatches = PROJECTS.filter(p => p.title.toLowerCase().includes(query.toLowerCase()) || p.tags.some(t => t.toLowerCase().includes(query.toLowerCase()))).slice(0, 5);
+            if (catMatches.length === 0 && projectMatches.length === 0) {
+                container.innerHTML = `<div class="p-4 text-gray-500 text-sm italic">No results found for "${query}"</div>`;
+            } else {
+                let html = "";
+                catMatches.forEach(cat => {
+                    html += `<div class="suggestion-item" onclick="handleKeywordNavigation('${cat}')">
+                        <svg class="text-blue-500 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                        <span class="text-sm font-medium text-gray-700">${cat}</span>
+                    </div>`;
+                });
+                projectMatches.forEach(p => {
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    const title = p.title.replace(regex, '<b>$1</b>');
+                    html += `<div class="suggestion-item" onclick="selectSuggestion('${p.title}', ${p.id})">
+                        <svg class="text-gray-400 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <span class="text-sm text-gray-700 truncate">${title}</span>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
+            container.classList.remove('hidden');
+        }
+document.getElementById('inquiry-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById('submit-btn');
+    const status = document.getElementById('form-status');
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    btn.disabled = true;
+    btn.innerText = 'Sending...';
+    status.classList.add('hidden');
+
+    try {
+        const res = await fetch("http://localhost:5000/api/contact", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const text = await res.text();
+
+        status.innerHTML = `
+        <div class="bg-green-50 border border-green-200 p-4 rounded-xl">
+            <p class="text-green-700 font-semibold">${text}</p>
+            <p class="text-green-600 text-sm">Thank you, ${data.name}. I will get back to you shortly.</p>
+        </div>`;
+
+        e.target.reset();
+
+    } catch (err) {
+        console.error(err);
+        status.innerHTML = `
+        <div class="bg-red-50 border border-red-200 p-4 rounded-xl">
+            <p class="text-red-700 font-semibold">Failed to send message.</p>
+        </div>`;
+    } finally {
+        status.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerText = 'Submit Inquiry';
+    }
+    });
+        
+
+        showLanding();
+    </script>
+</body>
+</html>
